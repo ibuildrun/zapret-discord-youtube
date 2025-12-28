@@ -1,0 +1,28 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release Archive
+        run: |
+          zip -r zapret-discord-youtube-gui.zip . -x ".git/*" -x ".github/*" -x ".kiro/*"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: zapret-discord-youtube-gui.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
