@@ -1,0 +1,62 @@
+# Zapret GUI Tests
+# Runs Pester tests for GUI modules on Windows
+
+name: GUI Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gui/**'
+      - '.github/workflows/gui-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'gui/**'
+      - '.github/workflows/gui-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Pester Tests
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -MinimumVersion 5.0.0 -Force -Scope CurrentUser
+      
+      - name: Run tests
+        shell: pwsh
+        run: |
+          Import-Module Pester -MinimumVersion 5.0.0
+          
+          $config = New-PesterConfiguration
+          $config.Run.Path = "gui/tests"
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          $config.TestResult.Enabled = $true
+          $config.TestResult.OutputPath = "test-results.xml"
+          $config.TestResult.OutputFormat = 'NUnitXml'
+          
+          Invoke-Pester -Configuration $config
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.xml
+      
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Pester Tests
+          path: test-results.xml
+          reporter: java-junit

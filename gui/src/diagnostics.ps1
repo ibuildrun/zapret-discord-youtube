@@ -6,7 +6,14 @@ class DiagnosticResult {
     [string]$Message
     [string]$HelpUrl
     
-    DiagnosticResult([string]$n, [string]$s, [string]$m, [string]$h = "") {
+    DiagnosticResult([string]$n, [string]$s, [string]$m) {
+        $this.Name = $n
+        $this.Status = $s
+        $this.Message = $m
+        $this.HelpUrl = ""
+    }
+    
+    DiagnosticResult([string]$n, [string]$s, [string]$m, [string]$h) {
         $this.Name = $n
         $this.Status = $s
         $this.Message = $m
