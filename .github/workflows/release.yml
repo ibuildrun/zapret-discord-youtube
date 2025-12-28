@@ -14,15 +14,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Changelog
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          excludeTypes: ''
+          includeInvalidCommits: true
 
       - name: Create Release Archive
         run: |
-          zip -r zapret-discord-youtube-gui.zip . -x ".git/*" -x ".github/*" -x ".kiro/*"
-
+          zip -r zapret-discord-youtube-gui.zip . -x ".git/*" -x ".github/*" -x ".kiro/*" -x "*.md"
+          
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: zapret-discord-youtube-gui.zip
-          generate_release_notes: true
+          body: ${{ steps.changelog.outputs.changes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
