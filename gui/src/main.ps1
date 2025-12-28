@@ -95,6 +95,7 @@ $btnRemove = $window.FindName("btnRemove")
 $btnDiag = $window.FindName("btnDiag")
 $btnTests = $window.FindName("btnTests")
 $btnUpdate = $window.FindName("btnUpdate")
+$btnHosts = $window.FindName("btnHosts")
 $btnRefresh = $window.FindName("btnRefresh")
 
 $btnGameFilter = $window.FindName("btnGameFilter")
@@ -236,6 +237,55 @@ $btnUpdate.Add_Click({
         Write-Log "You have the latest version"
         Show-CustomDialog -Owner $script:window -Title "Up to Date" -Message "You have the latest version: $($info.CurrentVersion)"
     }
+})
+
+# Update Hosts
+$btnHosts.Add_Click({
+    Write-Log "Updating hosts file..."
+    $btnHosts.IsEnabled = $false
+    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke([System.Windows.Threading.DispatcherPriority]::Background, [Action]{})
+    
+    $hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts"
+    $hostsUrl = "https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/refs/heads/main/.service/hosts"
+    $tempFile = Join-Path $env:TEMP "zapret_hosts.txt"
+    
+    try {
+        # Download hosts from repo
+        $response = Invoke-WebRequest -Uri $hostsUrl -UseBasicParsing -TimeoutSec 10
+        $response.Content | Out-File -FilePath $tempFile -Encoding UTF8
+        
+        if (Test-Path $tempFile) {
+            $repoContent = Get-Content $tempFile -Raw
+            $currentHosts = Get-Content $hostsFile -Raw -ErrorAction SilentlyContinue
+            
+            # Check if first and last lines exist in current hosts
+            $repoLines = Get-Content $tempFile
+            $firstLine = $repoLines | Select-Object -First 1
+            $lastLine = $repoLines | Select-Object -Last 1
+            
+            $needsUpdate = $false
+            if ($currentHosts -notmatch [regex]::Escape($firstLine)) { $needsUpdate = $true }
+            if ($currentHosts -notmatch [regex]::Escape($lastLine)) { $needsUpdate = $true }
+            
+            if ($needsUpdate) {
+                Write-Log "Hosts file needs update"
+                # Open both files for manual editing
+                Start-Process notepad.exe -ArgumentList $tempFile
+                Start-Process explorer.exe -ArgumentList "/select,`"$hostsFile`""
+                Show-CustomDialog -Owner $script:window -Title "Update Hosts" -Message "Hosts file needs to be updated.`n`nNotepad opened with new content.`nExplorer opened with hosts file location.`n`nManually copy the content to hosts file."
+            } else {
+                Write-Log "Hosts file is up to date"
+                Show-CustomDialog -Owner $script:window -Title "Hosts" -Message "Hosts file is already up to date."
+            }
+            
+            Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
+        }
+    } catch {
+        Write-Log "ERROR: $($_.Exception.Message)"
+        Show-CustomDialog -Owner $script:window -Title "Error" -Message "Failed to check hosts file:`n$($_.Exception.Message)"
+    }
+    
+    $btnHosts.IsEnabled = $true
 })
 
 # Game Filter

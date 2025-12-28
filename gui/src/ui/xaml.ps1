@@ -324,6 +324,7 @@ function Get-MainWindowXaml {
                                 <Button Name="btnDiag" Content="DIAGNOSTICS" Style="{StaticResource MainButton}"/>
                                 <Button Name="btnTests" Content="RUN TESTS" Style="{StaticResource MainButton}"/>
                                 <Button Name="btnUpdate" Content="UPDATES" Style="{StaticResource MainButton}"/>
+                                <Button Name="btnHosts" Content="UPDATE HOSTS" Style="{StaticResource MainButton}"/>
                                 <Button Name="btnRefresh" Content="REFRESH" Style="{StaticResource MainButton}"/>
                             </UniformGrid>
                         </StackPanel>
