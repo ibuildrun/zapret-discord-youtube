@@ -1,101 +1,84 @@
 # Zapret GUI
 
-Modern WPF-based graphical interface for zapret-discord-youtube.
-
-## Launch
-
-Double-click `gui.bat` in the root folder, or run:
-```
-cscript //nologo gui\launch.vbs
-```
-
-## Structure
-
-```
-gui/
-├── launch.vbs          # VBS launcher (hides PowerShell console)
-├── README.md           # This file
-└── src/
-    ├── main.ps1        # Entry point
-    ├── config.ps1      # Configuration and paths
-    ├── services.ps1    # Service management (install/remove)
-    ├── settings.ps1    # Settings toggles (Game Filter, IPset, etc.)
-    ├── diagnostics.ps1 # System diagnostics
-    ├── updates.ps1     # Update checking
-    └── ui/
-        ├── theme.ps1   # Color theme and helpers
-        ├── xaml.ps1    # XAML window definition
-        └── dialogs.ps1 # Custom dialog windows
-```
-
-## Features
-
-- Service installation/removal
-- Strategy selection
-- Status monitoring
-- Diagnostics
-- Settings management
-- Update checking
-- Custom black & white design
-
-## Requirements
-
-- Windows 10/11
-- PowerShell 5.1+
-- Administrator privileges
-
-## Credits
-
-Design by [ibuildrun](https://github.com/ibuildrun)
-
----
-
-# Zapret GUI (RU)
-
 Современный графический интерфейс на WPF для zapret-discord-youtube.
 
 ## Запуск
 
-Дважды кликните на `gui.bat` в корневой папке, или выполните:
+Дважды кликните на `gui.vbs` в корневой папке.
+
+Альтернативный способ:
 ```
 cscript //nologo gui\launch.vbs
 ```
 
-## Структура
+## Возможности
+
+### Управление службой
+- **INSTALL** - установка службы zapret с выбранной стратегией
+- **REMOVE** - удаление службы и остановка процессов
+
+### Диагностика и тесты
+- **DIAGNOSTICS** - проверка системы на конфликты (VPN, антивирусы, другие bypass)
+- **RUN TESTS** - запуск тестов конфигураций для поиска рабочей стратегии
+
+### Обновления
+- **UPDATES** - проверка новых версий zapret
+- **UPDATE HOSTS** - обновление hosts файла для голосовых каналов Discord
+
+### Настройки
+- **Game Filter** - фильтр игровых портов (ON/OFF)
+- **Auto Updates** - автоматическая проверка обновлений (ON/OFF)
+- **IPset Mode** - режим работы ipset (none/any/loaded)
+
+### Мониторинг
+- Статус службы Zapret
+- Статус драйвера WinDivert
+- Статус процесса обхода (winws.exe)
+- Текущая установленная стратегия
+
+## Структура проекта
 
 ```
 gui/
 ├── launch.vbs          # VBS лаунчер (скрывает консоль PowerShell)
-├── README.md           # Этот файл
+├── README.md           # Документация
 └── src/
     ├── main.ps1        # Точка входа
     ├── config.ps1      # Конфигурация и пути
-    ├── services.ps1    # Управление службами (установка/удаление)
-    ├── settings.ps1    # Переключатели настроек (Game Filter, IPset и др.)
+    ├── services.ps1    # Управление службами
+    ├── settings.ps1    # Переключатели настроек
     ├── diagnostics.ps1 # Диагностика системы
     ├── updates.ps1     # Проверка обновлений
+    ├── icon.ps1        # Генерация иконки
     └── ui/
-        ├── theme.ps1   # Цветовая тема и хелперы
+        ├── theme.ps1   # Цветовая тема
         ├── xaml.ps1    # XAML разметка окна
-        └── dialogs.ps1 # Кастомные диалоговые окна
+        └── dialogs.ps1 # Диалоговые окна
 ```
-
-## Возможности
-
-- Установка/удаление службы
-- Выбор стратегии обхода
-- Мониторинг статуса
-- Диагностика системы
-- Управление настройками
-- Проверка обновлений
-- Кастомный чёрно-белый дизайн
 
 ## Требования
 
 - Windows 10/11
 - PowerShell 5.1+
-- Права администратора
+- Права администратора (запрашиваются автоматически)
+
+## Решение проблем
+
+### GUI не запускается
+1. Убедитесь что архив полностью распакован
+2. Проверьте наличие папки `bin` с файлами
+3. Попробуйте запустить от имени администратора
+
+### Служба не устанавливается
+1. Запустите DIAGNOSTICS для проверки конфликтов
+2. Удалите конфликтующие bypass (GoodbyeDPI и др.)
+3. Перезагрузите компьютер
+
+### Discord не работает после установки
+1. Нажмите UPDATE HOSTS для обновления hosts файла
+2. Очистите кэш Discord через DIAGNOSTICS
+3. Попробуйте другую стратегию
 
 ## Авторы
 
-Дизайн: [ibuildrun](https://github.com/ibuildrun)
+Дизайн и разработка: [ibuildrun](https://github.com/ibuildrun)
