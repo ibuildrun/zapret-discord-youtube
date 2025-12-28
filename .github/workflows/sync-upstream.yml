@@ -2,7 +2,7 @@ name: Sync Fork with Upstream
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Daily at 6:00 UTC
+    - cron: '0 */6 * * *'  # Every 6 hours
   workflow_dispatch:  # Manual trigger
 
 jobs:
@@ -22,5 +22,31 @@ jobs:
           git remote add upstream https://github.com/Flowseal/zapret-discord-youtube.git
           git fetch upstream
           git checkout main
-          git merge upstream/main --no-edit || true
+          
+          # Try to merge, if conflict - use ours for .gitignore and .kiro files
+          if ! git merge upstream/main --no-edit; then
+            echo "Merge conflict detected, attempting auto-resolution..."
+            
+            # For .gitignore - keep both versions combined
+            if git diff --name-only --diff-filter=U | grep -q ".gitignore"; then
+              git checkout --ours .gitignore
+              git add .gitignore
+            fi
+            
+            # For .kiro folder - always keep ours (fork-specific)
+            if git diff --name-only --diff-filter=U | grep -q ".kiro/"; then
+              git checkout --ours .kiro/
+              git add .kiro/
+            fi
+            
+            # Check if all conflicts resolved
+            if git diff --name-only --diff-filter=U | grep -v ".gitignore" | grep -v ".kiro/" | head -1; then
+              echo "Unresolved conflicts remain, manual intervention required"
+              git merge --abort
+              exit 1
+            fi
+            
+            git commit -m "chore: auto-merge upstream changes"
+          fi
+          
           git push origin main
