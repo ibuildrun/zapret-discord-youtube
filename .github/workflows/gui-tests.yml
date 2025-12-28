@@ -54,9 +54,8 @@ jobs:
           path: test-results.xml
       
       - name: Publish test results
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
         with:
-          name: Pester Tests
-          path: test-results.xml
-          reporter: dotnet-nunit
+          files: test-results.xml
+          check_name: Pester Tests
