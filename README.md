@@ -1,10 +1,34 @@
 <div align="center">
 
-# <img src="https://cdn-icons-png.flaticon.com/128/5968/5968756.png" height=28 /> <a href="https://github.com/Flowseal/">Flowseal</a><a href="https://github.com/Flowseal/zapret-discord-youtube">/zapret-discord-youtube</a> <img src="https://cdn-icons-png.flaticon.com/128/1384/1384060.png" height=28 />
+# <img src="https://cdn-icons-png.flaticon.com/128/5968/5968756.png" height=28 /> zapret-discord-youtube + GUI <img src="https://cdn-icons-png.flaticon.com/128/1384/1384060.png" height=28 />
+
+**Fork of [Flowseal/zapret-discord-youtube](https://github.com/Flowseal/zapret-discord-youtube) with modern GUI interface**
 
 Альтернатива https://github.com/bol-van/zapret-win-bundle  
 Также вы можете материально поддержать оригинального разработчика zapret [тут](https://github.com/bol-van/zapret?tab=readme-ov-file#%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D1%82%D1%8C-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%B0)
 </div>
+
+---
+
+## 🖥️ GUI Interface
+
+This fork includes a modern WPF-based GUI for easier management.
+
+**Features:**
+- Install/remove zapret service
+- Strategy selection from dropdown
+- Status monitoring (service, WinDivert, winws process)
+- System diagnostics
+- Settings management (Game Filter, Auto Updates, IPset Mode)
+- Update checker
+
+**How to use:** Run `gui.vbs` in project root folder.
+
+**Requirements:** Windows 10/11, PowerShell 5.1+, Administrator rights
+
+[GUI Documentation](./gui/README.md)
+
+---
 
 > [!CAUTION]
 >
