@@ -1,34 +1,34 @@
-# Contributing
+# Участие в разработке
 
-## Commit Convention
+## Формат коммитов
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/).
+Проект использует [Conventional Commits](https://www.conventionalcommits.org/).
 
-### Format
+### Формат
 
 ```
-<type>(<scope>): <description>
+<тип>(<область>): <описание>
 ```
 
-### Types
+### Типы
 
-- `feat` - New feature
-- `fix` - Bug fix
-- `docs` - Documentation changes
-- `style` - Code style changes (formatting, no code change)
-- `refactor` - Code refactoring
-- `perf` - Performance improvements
-- `test` - Adding or updating tests
-- `chore` - Maintenance tasks
-- `ci` - CI/CD changes
+- `feat` - Новая функция
+- `fix` - Исправление бага
+- `docs` - Изменения документации
+- `style` - Изменения стиля кода (форматирование, без изменения логики)
+- `refactor` - Рефакторинг кода
+- `perf` - Улучшение производительности
+- `test` - Добавление или обновление тестов
+- `chore` - Служебные задачи
+- `ci` - Изменения CI/CD
 
-### Scopes (optional)
+### Области (опционально)
 
-- `gui` - GUI related changes
-- `core` - Core functionality
-- `config` - Configuration changes
+- `gui` - Изменения связанные с GUI
+- `core` - Основной функционал
+- `config` - Изменения конфигурации
 
-### Examples
+### Примеры
 
 ```
 feat(gui): add copy button for diagnostics output
@@ -40,11 +40,11 @@ ci: add release workflow
 
 ## Pull Requests
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes following commit convention
-4. Submit a pull request
+1. Сделайте форк репозитория
+2. Создайте ветку для фичи
+3. Внесите изменения следуя формату коммитов
+4. Отправьте pull request
 
-## Reporting Issues
+## Сообщения об ошибках
 
-Use GitHub Issues to report bugs or request features.
+Используйте GitHub Issues для сообщений о багах или запросов функций.

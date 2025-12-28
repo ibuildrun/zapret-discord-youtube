@@ -1,21 +1,21 @@
-# Security
+# Безопасность
 
-## Reporting Vulnerabilities
+## Сообщить об уязвимости
 
-If you discover a security vulnerability, please open a GitHub Issue or contact via GitHub.
+Если вы обнаружили уязвимость, откройте Issue на GitHub или свяжитесь через GitHub.
 
-## Code Transparency
+## Прозрачность кода
 
-- All source code is open and auditable
-- GUI is written in PowerShell/WPF - fully readable
-- No obfuscation or compiled binaries (except WinDivert from upstream)
-- WinDivert binaries are from official [bol-van/zapret-win-bundle](https://github.com/bol-van/zapret-win-bundle)
+- Весь исходный код открыт и доступен для проверки
+- GUI написан на PowerShell/WPF - полностью читаемый
+- Никакой обфускации или скомпилированных бинарников (кроме WinDivert из upstream)
+- Бинарники WinDivert взяты из официального [bol-van/zapret-win-bundle](https://github.com/bol-van/zapret-win-bundle)
 
-## Permissions
+## Разрешения
 
-GUI requires Administrator rights to:
-- Install/remove Windows services
-- Modify network settings
-- Access WinDivert driver
+GUI требует права администратора для:
+- Установки/удаления служб Windows
+- Изменения сетевых настроек
+- Доступа к драйверу WinDivert
 
-No data is collected or transmitted. All operations are local.
+Никакие данные не собираются и не передаются. Все операции локальные.
