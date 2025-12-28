@@ -26,6 +26,7 @@ jobs:
           tag: ${{ github.ref_name }}
           excludeTypes: ''
           includeInvalidCommits: true
+          useGitmojis: false
 
       - name: Create Release Archive
         run: |
