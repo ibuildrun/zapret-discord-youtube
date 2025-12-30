@@ -21,18 +21,58 @@ class UpdateInfo {
 function Compare-SemanticVersion {
     param([string]$V1, [string]$V2)
     
-    $p1 = $V1.Split('.') | ForEach-Object { [int]$_ }
-    $p2 = $V2.Split('.') | ForEach-Object { [int]$_ }
+    # Clean version strings (remove 'v' prefix if present)
+    $V1 = $V1.TrimStart('v').Trim()
+    $V2 = $V2.TrimStart('v').Trim()
     
-    $max = [Math]::Max($p1.Count, $p2.Count)
-    while ($p1.Count -lt $max) { $p1 += 0 }
-    while ($p2.Count -lt $max) { $p2 += 0 }
+    # Handle empty versions
+    if ([string]::IsNullOrWhiteSpace($V1)) { return -1 }
+    if ([string]::IsNullOrWhiteSpace($V2)) { return 1 }
     
-    for ($i = 0; $i -lt $max; $i++) {
-        if ($p1[$i] -gt $p2[$i]) { return 1 }
-        if ($p1[$i] -lt $p2[$i]) { return -1 }
+    try {
+        $p1 = $V1.Split('.') | ForEach-Object { [int]$_ }
+        $p2 = $V2.Split('.') | ForEach-Object { [int]$_ }
+        
+        $max = [Math]::Max($p1.Count, $p2.Count)
+        
+        # Pad arrays to same length
+        $arr1 = @($p1)
+        $arr2 = @($p2)
+        while ($arr1.Count -lt $max) { $arr1 += 0 }
+        while ($arr2.Count -lt $max) { $arr2 += 0 }
+        
+        for ($i = 0; $i -lt $max; $i++) {
+            if ($arr1[$i] -gt $arr2[$i]) { return 1 }
+            if ($arr1[$i] -lt $arr2[$i]) { return -1 }
+        }
+        return 0
     }
-    return 0
+    catch {
+        # Fallback to string comparison
+        return [string]::Compare($V1, $V2)
+    }
+}
+
+function Get-RemoteVersion {
+    param([string]$Url)
+    
+    try {
+        $request = [System.Net.WebRequest]::Create($Url)
+        $request.Timeout = 10000
+        $request.Headers.Add("Cache-Control", "no-cache")
+        
+        $response = $request.GetResponse()
+        $stream = $response.GetResponseStream()
+        $reader = New-Object System.IO.StreamReader($stream)
+        $version = $reader.ReadToEnd().Trim()
+        $reader.Close()
+        $response.Close()
+        
+        return $version
+    }
+    catch {
+        return $null
+    }
 }
 
 function Test-NewVersionAvailable {
@@ -40,27 +80,22 @@ function Test-NewVersionAvailable {
     $result.CurrentVersion = $script:Config.Version
     
     try {
-        $request = [System.Net.WebRequest]::Create($script:Config.GitHubVersionUrl)
-        $request.Timeout = 10000
-        $request.Headers.Add("Cache-Control", "no-cache")
+        # Get upstream version
+        $upstreamVersion = Get-RemoteVersion -Url $script:Config.GitHubVersionUrl
         
-        $response = $request.GetResponse()
-        $stream = $response.GetResponseStream()
-        $reader = New-Object System.IO.StreamReader($stream)
-        $latest = $reader.ReadToEnd().Trim()
-        $reader.Close()
-        $response.Close()
-        
-        if (-not $latest) {
-            $result.Error = "Empty version response"
+        if (-not $upstreamVersion) {
+            $result.Error = "Failed to fetch version info"
             return $result
         }
         
-        $result.LatestVersion = $latest
-        $result.ReleaseUrl = "$($script:Config.GitHubReleaseUrl)$latest"
-        $result.DownloadUrl = "$($script:Config.GitHubDownloadUrl)$latest.rar"
+        $result.LatestVersion = $upstreamVersion
+        $result.ReleaseUrl = "$($script:Config.GitHubReleaseUrl)$upstreamVersion"
+        $result.DownloadUrl = "$($script:Config.GitHubDownloadUrl)$upstreamVersion.rar"
         
-        $cmp = Compare-SemanticVersion -V1 $latest -V2 $script:Config.Version
+        # Compare versions properly
+        # Update available only if upstream is NEWER (cmp > 0)
+        # If our version is higher (cmp < 0) - we're ahead, no update needed
+        $cmp = Compare-SemanticVersion -V1 $upstreamVersion -V2 $script:Config.Version
         $result.Available = ($cmp -gt 0)
         
         return $result
